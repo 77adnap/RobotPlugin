@@ -13,6 +13,16 @@ public class SampleRobot : IRobotPlugin
 	public int VersionMajor { get { return 1; } }
 	public int VersionMinor { get { return 0; } }
 
+    enum State {Start, Ziel, Ende};
+    State RobotState;
+
+    public Vector RobotPos;
+    public Vector StonePos;
+    public Vector TargetCircle;
+
+    
+    
+
 	// Diese Interfaces bekommt man beim Start übergeben und sollte sie sich zur weiteren verwendung speichern.
 	private IApplication App;
 	private IRobot Robot;
@@ -34,7 +44,15 @@ public class SampleRobot : IRobotPlugin
 		Robot = robot;
 		Field = field;
 
+        RobotState = State.Start;
+        FindStone();
+
 		App.LogMessage("Sample Robot initialized");
+
+        //RobotPos = Robot.Data.Position;
+        //StonePos = Field.OperationArea.Position;
+        //TargetCircle = Field.TargetArea.Position;
+
 	}
 
 	/// <summary>
@@ -56,12 +74,103 @@ public class SampleRobot : IRobotPlugin
 		// z.B. im Kreis zu fahren:
 
 		// update local copy of the stone
-		if (currentStone.Id != -1) currentStone = Field.GetStoneById(currentStone.Id);
+       // if (currentStone.Id != -1)
+        //{
+          //  currentStone = Field.GetStoneById(currentStone.Id);
+        //}
 
-		Robot.GoForward();
-		Robot.TurnLeft();
+       
+        RobotPos = Robot.Data.Position;
+
+        switch (RobotState)
+        {
+            case State.Start: MoveToStone(); break;
+            case State.Ziel: MoveToTarget(); break;
+            
+        }
+
+
 	}
 
+    public void MoveToStone()
+    {
+        
+        StonePos = currentStone.Position;
+     
+
+        Vector x = StonePos - RobotPos;
+        x.Normalize();
+        float result = Vector.Dot(Robot.Data.Right, x);
+
+        if (currentStone.IsInTouchWithRobot == true)
+        {
+            // State Ziel ändern
+            RobotState = State.Ziel;
+        }
+        else
+        {
+            Movement(result);
+        }
+
+    }
+
+ 
+
+    public void MoveToTarget()
+    {
+        TargetCircle = Field.TargetArea.Position;
+        Vector x = TargetCircle - RobotPos;
+        x.Normalize();
+        float result = Vector.Dot(Robot.Data.Right, x);
+
+        if (currentStone.Id == -1)
+        {
+            //State SteinSuchen ändern
+            RobotState= State.Start;
+            FindStone();
+            
+        }
+        else
+        {
+            Movement(result);
+        }
+    }
+
+
+    public void FindStone()
+    {
+        currentStone = Field.Stones[0];
+        foreach (StoneData s in Field.Stones)
+        {
+            if (Vector.DistanceSquared(s.Position, Robot.Data.Position) <
+                Vector.DistanceSquared(currentStone.Position, Robot.Data.Position))
+            {
+                currentStone = s;
+            }
+        }
+    }
+
+    public void Movement(float result)
+    {
+
+
+        if (result > 0.01)
+        {
+            //rechts drehen
+            Robot.TurnRight();
+        }
+
+        if (result < -0.01)
+        {
+            //links drehen
+            Robot.TurnLeft();
+        }
+
+        if (result < 0.01 && result > -0.01)
+        {
+            Robot.GoForward();
+        }
+    }
 
 	/// <summary>
 	/// Called once before the plugin is unloaded
@@ -74,5 +183,7 @@ public class SampleRobot : IRobotPlugin
 		Robot = null;
 		Field = null;
 	}
+
+
 }
 
