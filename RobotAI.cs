@@ -16,9 +16,6 @@ public class SampleRobot : IRobotPlugin
     enum State {SearchStone, Ziel, Ende, Pre};
     State RobotState;
 
-    public Vector RobotPos;
-    public Vector StonePos;
-    public Vector TargetCircle;
     public StoneData [] OurStones;
     public int counter = 0;
 
@@ -86,10 +83,7 @@ public class SampleRobot : IRobotPlugin
 
         if (RobotState == State.Pre)
         {
-            for (int i = 0; i < 4; i++)
-            {
-                OurStones[i] = Field.Stones[i];
-            }
+            
 
             FindStone();
             RobotState = State.SearchStone;
@@ -172,6 +166,7 @@ public class SampleRobot : IRobotPlugin
             Robot.GoBackward();
             Robot.GoBackward();
             RobotState = State.SearchStone;
+            FindStone();
         }
         else
         {
@@ -200,8 +195,14 @@ public class SampleRobot : IRobotPlugin
         */
         if (counter < 4)
         {
-            currentStone = OurStones[counter];
+            
+            currentStone = Field.GetStoneById(counter);
+            currentStonePos = currentStone.Position;
             counter++;
+            if (currentStone.Id == -1)
+            {
+           //     App.LogMessage("no stone");
+            }
         }
         
     }
