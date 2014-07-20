@@ -8,8 +8,8 @@
     <ProjectGuid>{1F0AC29B-EB50-4AAC-872C-EE10E42D7D38}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EmptyRobot</RootNamespace>
-    <AssemblyName>EmptyRobot</AssemblyName>
+    <RootNamespace>HMF</RootNamespace>
+    <AssemblyName>HMF</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

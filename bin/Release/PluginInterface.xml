@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PluginInterface</name>
+    </assembly>
+    <members>
+        <member name="F:TriCAT.StoneData.Id">
+            <summary>
+            Unique ID of the stone, doesn't change. Use this to identify the stone in the Stones array of the playing field.
+            </summary>
+        </member>
+        <member name="F:TriCAT.StoneData.IsInTouchWithRobot">
+            <summary>
+            True, if this stone is directly in contact with the robot
+            </summary>
+        </member>
+        <member name="F:TriCAT.RobotData.Up">
+            <summary>
+            Current local Y-vector of the robot
+            </summary>
+        </member>
+        <member name="F:TriCAT.RobotData.Right">
+            <summary>
+            Current local X-vector of the robot
+            </summary>
+        </member>
+        <member name="F:TriCAT.RobotData.Forward">
+            <summary>
+            Current local Z-vector of the robot
+            </summary>
+        </member>
+        <member name="F:TriCAT.RobotData.Position">
+            <summary>
+            Current position of the robot (center)
+            </summary>
+        </member>
+        <member name="F:TriCAT.RobotData.Rotation">
+            <summary>
+            Current rotation of the robot
+            </summary>
+        </member>
+        <member name="F:TriCAT.RobotData.Size">
+            <summary>
+            Current size of the bounding box
+            </summary>
+        </member>
+        <member name="M:TriCAT.IApplication.LogMessage(System.String)">
+            <summary>
+            Helper function to log some debug messages to the console window
+            </summary>
+            <param name="msg">The actual message to log</param>
+        </member>
+        <member name="M:TriCAT.IApplication.DrawLine(TriCAT.Vector,TriCAT.Vector,System.Single)">
+            <summary>
+            Helper function to draw some debug lines into the world
+            </summary>
+            <param name="start">Worldspace starting point of the line segment</param>
+            <param name="end">Worldspace endpoint of the line segment</param>
+            <param name="duration">Visibility duration in seconds</param>
+        </member>
+        <member name="M:TriCAT.IPlayingField.GetStoneIndexById(System.Int32)">
+            <summary>
+            Maps the unique stone id to the current array index in Stones[]
+            </summary>
+            <param name="id">Unique id of the stone</param>
+            <returns>Index into the Stones[] array, or -1 if not found</returns>
+        </member>
+        <member name="M:TriCAT.IPlayingField.GetStoneById(System.Int32)">
+            <summary>
+            Maps the given unique stone id to the actual stone data
+            </summary>
+            <param name="id">Unique id of the stone</param>
+            <returns>The matching stone data, or an invalid stone (with id = -1) if not found</returns>
+        </member>
+        <member name="P:TriCAT.IPlayingField.Stones">
+            <summary>
+            List of active stones on the playing field.
+            Once a stone is moved onto the target circle it will be removed from this list.
+            </summary>
+        </member>
+        <member name="P:TriCAT.IPlayingField.TargetArea">
+            <summary>
+            Location and size of the target area.
+            Your robot should move all the stones into this circle.
+            </summary>
+        </member>
+        <member name="P:TriCAT.IPlayingField.OperationArea">
+            <summary>
+            The size of the playing field
+            </summary>
+        </member>
+        <member name="T:TriCAT.IRobot">
+            <summary>
+            Represents the state of the actual robot for exactly one simulation tick.
+            </summary>
+        </member>
+        <member name="P:TriCAT.IRobot.Data">
+            <summary>
+            The current state of the robot
+            </summary>
+        </member>
+        <member name="M:TriCAT.IRobotPlugin.OnInit(TriCAT.IApplication,TriCAT.IRobot,TriCAT.IPlayingField)">
+            <summary>
+            Called once, after the plugin has been loaded
+            </summary>
+            <param name="app">Provides some debug methods like message logging and line drawing</param>
+            <param name="robot">Holds the state of the actual robot and exposes some driving controls</param>
+            <param name="field">Holds the state of the playing field, like active stones and target area</param>
+        </member>
+        <member name="M:TriCAT.IRobotPlugin.OnReset">
+            <summary>
+            Called everytime, the user clicks the "Reset" button.
+            </summary>
+        </member>
+        <member name="M:TriCAT.IRobotPlugin.OnTick">
+            <summary>
+            Called once for every simulation step.
+            This is the place to implement your robot steering logic.
+            </summary>
+        </member>
+        <member name="M:TriCAT.IRobotPlugin.OnRelease">
+            <summary>
+            Called once before the plugin is unloaded
+            </summary>
+        </member>
+        <member name="P:TriCAT.IRobotPlugin.GroupName">
+            <summary>
+            Name of the plugin author group.
+            Will be used to submit TinCAN statements about the plugin to the users Learning Record Store
+            </summary>
+        </member>
+        <member name="P:TriCAT.IRobotPlugin.Authors">
+            <summary>
+            List of email adresses of the plugin authors.
+            Will be used to submit TinCAN statements about the plugin to the users Learning Record Store
+            </summary>
+        </member>
+        <member name="P:TriCAT.IRobotPlugin.VersionMajor">
+            <summary>
+            Major version number of the plugin
+            </summary>
+        </member>
+        <member name="P:TriCAT.IRobotPlugin.VersionMinor">
+            <summary>
+            Minor version number of the plugin
+            </summary>
+        </member>
+        <member name="M:TriCAT.Vector.Length">
+            <summary>
+            Length of the vector
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TriCAT.Vector.LengthSquared">
+            <summary>
+            Squared length of the vector
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TriCAT.Vector.Normalize">
+            <summary>
+            Normalize the vector
+            </summary>
+        </member>
+        <member name="M:TriCAT.Vector.GetNormalized">
+            <summary>
+            Returns normalized vector without changing the vector
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TriCAT.Vector.Dot(TriCAT.Vector,TriCAT.Vector)">
+            <summary>
+            Scalar product of two vectors
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TriCAT.Vector.Cross(TriCAT.Vector,TriCAT.Vector)">
+            <summary>
+            Cross product of two vectors
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TriCAT.Vector.DistanceSquared(TriCAT.Vector,TriCAT.Vector)">
+            <summary>
+            Squared distance between two vectors
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TriCAT.Vector.Distance(TriCAT.Vector,TriCAT.Vector)">
+            <summary>
+            Distance between two vectors
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TriCAT.Vector.Normalize(TriCAT.Vector)">
+            <summary>
+            Normalize vector a
+            </summary>
+            <param name="a"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
