@@ -13,11 +13,12 @@ public class SampleRobot : IRobotPlugin
 	public int VersionMajor { get { return 1; } }
 	public int VersionMinor { get { return 0; } }
 
-    enum State {SearchStone, Ziel, Ende, Pre};
+    enum State {SearchStone, Ziel, Ende, Pre, Back};
     State RobotState;
 
     public StoneData [] OurStones;
     public int counter = 0;
+    public int counterBack = 0;
 
     
     
@@ -97,6 +98,7 @@ public class SampleRobot : IRobotPlugin
             case State.SearchStone: MoveToStone(); break;
             case State.Ziel: MoveToTarget(); break;
             case State.Pre: App.LogMessage("Pre fail") ; break;
+            case State.Back: Back(); break;
             
         }
         
@@ -110,6 +112,7 @@ public class SampleRobot : IRobotPlugin
         
        // Vector x = currentStone.Position - Robot.Data.Position;
         Vector x = currentStonePos - Robot.Data.Position;
+        Vector y = x;
         x.Normalize();
         float result = Vector.Dot(Robot.Data.Right, x);
 
@@ -118,7 +121,7 @@ public class SampleRobot : IRobotPlugin
             // State Ziel ändern
             RobotState = State.Ziel;
         } */
-        if(Vector.Dot(Robot.Data.Forward, x) < 0)
+        if(Vector.Dot(Robot.Data.Forward, x) < 0 && y.Length() < 1 )
         {
             RobotState = State.Ziel;
         }
@@ -145,6 +148,7 @@ public class SampleRobot : IRobotPlugin
 
 
         Vector x = Field.TargetArea.Position - Robot.Data.Position;
+        Vector y = x;
         x.Normalize();
         float result = Vector.Dot(Robot.Data.Right, x);
 
@@ -158,15 +162,12 @@ public class SampleRobot : IRobotPlugin
             FindStone();
             
         } */
-        if (Vector.Dot(Robot.Data.Forward, x) < 0)
+        if (Vector.Dot(Robot.Data.Forward, x) < 0 && y.Length() < 1)
         {
-            Robot.GoBackward();
-            Robot.GoBackward();
-            Robot.GoBackward();
-            Robot.GoBackward();
-            Robot.GoBackward();
-            RobotState = State.SearchStone;
-            FindStone();
+            
+           
+            RobotState = State.Back;
+           
         }
         else
         {
@@ -197,6 +198,7 @@ public class SampleRobot : IRobotPlugin
         {
             
             currentStone = Field.GetStoneById(counter);
+            App.LogMessage(currentStone.Id + " : " + counter); 
             currentStonePos = currentStone.Position;
             counter++;
             if (currentStone.Id == -1)
@@ -205,6 +207,21 @@ public class SampleRobot : IRobotPlugin
             }
         }
         
+    }
+
+    public void Back()
+    {
+        if (counterBack < 20)
+        {
+            Robot.GoBackward();
+            counterBack++;
+        }
+        else
+        {
+            counterBack = 0;
+            RobotState = State.SearchStone;
+            FindStone();
+        }
     }
 
     public void Movement(float result)
