@@ -19,7 +19,7 @@ public class SampleRobot : IRobotPlugin
     public StoneData [] OurStones;
     public int counter = 0;
     public int counterBack = 0;
-
+    public int counterPush = 0;
     
     
 
@@ -51,9 +51,7 @@ public class SampleRobot : IRobotPlugin
 
 		App.LogMessage("Sample Robot initialized");
 
-        //RobotPos = Robot.Data.Position;
-        //StonePos = Field.OperationArea.Position;
-        //TargetCircle = Field.TargetArea.Position;
+       
 
 	}
 
@@ -110,20 +108,17 @@ public class SampleRobot : IRobotPlugin
         
             
         
-       // Vector x = currentStone.Position - Robot.Data.Position;
         Vector x = currentStonePos - Robot.Data.Position;
         Vector y = x;
         x.Normalize();
         float result = Vector.Dot(Robot.Data.Right, x);
 
-       /* if (currentStone.IsInTouchWithRobot == true)
-        {
-            // State Ziel ändern
-            RobotState = State.Ziel;
-        } */
+     
         if(Vector.Dot(Robot.Data.Forward, x) < 0 && y.Length() < 1 )
         {
-            RobotState = State.Ziel;
+          
+                RobotState = State.Ziel;
+             
         }
         else
         {
@@ -138,36 +133,24 @@ public class SampleRobot : IRobotPlugin
     public void MoveToTarget()
     {
 
-       /* if (currentStone.IsInTouchWithRobot == false)
-        {
-            
-            RobotState = State.SearchStone;
-            return;
-        } */
-
-
-
         Vector x = Field.TargetArea.Position - Robot.Data.Position;
         Vector y = x;
         x.Normalize();
         float result = Vector.Dot(Robot.Data.Right, x);
 
-        
-
 
        /* if (currentStone.Id == -1)
         {
             //State SteinSuchen ändern
-            RobotState = State.SearchStone;
-            FindStone();
+            RobotState = State.Back;
             
-        } */
-        if (Vector.Dot(Robot.Data.Forward, x) < 0 && y.Length() < 1)
+           
+        }*/ //Vector.Dot(Robot.Data.Forward, x) < 0
+
+        if ( y.Length() < Field.TargetArea.Radius )
         {
             
-           
-            RobotState = State.Back;
-           
+            RobotState = State.Back;  
         }
         else
         {
@@ -178,33 +161,27 @@ public class SampleRobot : IRobotPlugin
 
     public void FindStone()
     {
-      /* int oldStoneId = currentStone.Id;
-        currentStone = Field.Stones[0];
-        foreach (StoneData s in Field.Stones)
-        {
-            if( s.Id == oldStoneId)
-            {
-                continue;
-            }
-            if (Vector.DistanceSquared(s.Position, Robot.Data.Position) <
-                Vector.DistanceSquared(currentStone.Position, Robot.Data.Position))
-            {
-                currentStone = s;
-            }
-        }
-        currentStonePos  = currentStone.Position;
-        */
+
         if (counter < 4)
         {
-            
+            App.LogMessage(counter + " :");
             currentStone = Field.GetStoneById(counter);
-            App.LogMessage(currentStone.Id + " : " + counter); 
             currentStonePos = currentStone.Position;
             counter++;
-            if (currentStone.Id == -1)
+
+        }
+        else
+        {
+            
+            for (int i = 0; i < 4; i++)
             {
-           //     App.LogMessage("no stone");
+                if (Field.GetStoneById(i).Id == -1)
+                {
+                    counter = i; 
+                    App.LogMessage("id " + Field.GetStoneById(i).Id);
+                }
             }
+            
         }
         
     }
@@ -250,11 +227,7 @@ public class SampleRobot : IRobotPlugin
         }
         
 
-    //    if (result <= 0.02 && result >= -0.02)
-        {
-            
-        //   Robot.GoForward();
-        }
+    
     }
 
 	/// <summary>
