@@ -4,10 +4,10 @@ using TriCAT;
 public class SampleRobot : IRobotPlugin
 {
 	// Name der Lerngruppe, die dieses Plugin entwickelt
-	public string GroupName { get { return "Test Group"; } }
+	public string GroupName { get { return "Bei dieser Produktion wurden keine Pandas verletzt"; } }
 
 	// Liste mit Email Adressen der Authoren
-	public string[] Authors { get { return new string[] { "max@mustermann.de", "john@doe.com" }; } }
+    public string[] Authors { get { return new string[] {"Michael Holzwarth", "Sebastian Frantzen", "Stanislaus Martin" }; } }
 
 	// Versionsnummer des Plugins
 	public int VersionMajor { get { return 1; } }
@@ -113,11 +113,20 @@ public class SampleRobot : IRobotPlugin
         x.Normalize();
         float result = Vector.Dot(Robot.Data.Right, x);
 
-     
+        
         if(Vector.Dot(Robot.Data.Forward, x) < 0 && y.Length() < 1 )
         {
-          
+            if (counterPush < 2)
+            {
+                FindStone();
+                counterPush++;
+            }
+            else
+            {
                 RobotState = State.Ziel;
+            }
+          
+                
              
         }
         else
@@ -128,6 +137,7 @@ public class SampleRobot : IRobotPlugin
 
     }
 
+  
  
 
     public void MoveToTarget()
@@ -138,14 +148,6 @@ public class SampleRobot : IRobotPlugin
         x.Normalize();
         float result = Vector.Dot(Robot.Data.Right, x);
 
-
-       /* if (currentStone.Id == -1)
-        {
-            //State SteinSuchen ändern
-            RobotState = State.Back;
-            
-           
-        }*/ //Vector.Dot(Robot.Data.Forward, x) < 0
 
         if ( y.Length() < Field.TargetArea.Radius )
         {
@@ -162,9 +164,10 @@ public class SampleRobot : IRobotPlugin
     public void FindStone()
     {
 
-        if (counter < 4)
+        if (counter < 3)
+            
         {
-            App.LogMessage(counter + " :");
+           
             currentStone = Field.GetStoneById(counter);
             currentStonePos = currentStone.Position;
             counter++;
@@ -175,12 +178,16 @@ public class SampleRobot : IRobotPlugin
             
             for (int i = 0; i < 4; i++)
             {
-                if (Field.GetStoneById(i).Id == -1)
+                StoneData stone = Field.GetStoneById(i);
+               Vector x = stone.Position - Field.TargetArea.Position;
+                if ( x.Length() > Field.TargetArea.Radius )
                 {
-                    counter = i; 
-                    App.LogMessage("id " + Field.GetStoneById(i).Id);
+
+                    currentStone = Field.GetStoneById(i);
+                    currentStonePos = currentStone.Position;
+                    App.LogMessage("id neu holen " + Field.GetStoneById(i).Id);
                 }
-            }
+            } 
             
         }
         
