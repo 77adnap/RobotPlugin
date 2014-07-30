@@ -5,8 +5,10 @@ public class SampleRobot : IRobotPlugin
 {
 	// Name der Lerngruppe, die dieses Plugin entwickelt
 	public string GroupName { get { return "Bei dieser Produktion wurden keine Pandas verletzt"; } }
-
-	// Liste mit Email Adressen der Authoren
+    /**********************/
+    // github.com/77adnap
+    /**********************/
+    // Liste mit Email Adressen der Authoren
     public string[] Authors { get { return new string[] {"Michael Holzwarth", "Sebastian Frantzen", "Stanislaus Martin" }; } }
 
 	// Versionsnummer des Plugins
@@ -116,7 +118,7 @@ public class SampleRobot : IRobotPlugin
         
         if(Vector.Dot(Robot.Data.Forward, x) < 0 && y.Length() < 1 )
         {
-            if (counterPush < 2)
+            if (counterPush < 3)
             {
                 FindStone();
                 counterPush++;
